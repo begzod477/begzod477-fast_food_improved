@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ food.name }}</title>
+</head>
+<body>
+    <h1>{{ food.name }}</h1>
+    <img src="{{ food.photo.url }}" alt="{{ food.name }}">
+    <p>{{ food.description }}</p>
+    <p>Price: ${{ food.price }}</p>
+    <p>Ko'rishlar soni: {{ food.views }}</p>  
+    <a href="{% url 'home' %}">Bosh sahifaga qaytish</a>
+</body>
+</html>

@@ -47,7 +47,7 @@ def create(self):
     return food
 
 
-    def update(self, instance: Food):
+def update(self, instance: Food):
         instance.name = self.cleaned_data.get("name", instance.name)
         instance.description = self.cleaned_data.get("description", instance.description)
         instance.price = self.cleaned_data.get("price", instance.price)

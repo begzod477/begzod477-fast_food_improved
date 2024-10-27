@@ -7,10 +7,54 @@
 </head>
 <body>
     <h1>{{ food.name }}</h1>
-    <img src="{{ food.photo.url }}" alt="{{ food.name }}">
-    <p>{{ food.description }}</p>
+    
+    {% if food.image %}
+        <img src="{{ food.image.url }}" alt="{{ food.name }}" style="height: 300px; object-fit: cover;">
+    {% endif %}
+
+    <p><strong>Type:</strong> {{ food.food_type }}</p>
+    <p><strong>Ingredients:</strong> {{ food.ingredients }}</p>
     <p>Price: ${{ food.price }}</p>
-    <p>Ko'rishlar soni: {{ food.views }}</p>  
-    <a href="{% url 'home' %}">Bosh sahifaga qaytish</a>
+    <p>Ko'rishlar soni: {{ food.view_count }}</p>  
+
+    <div class="likebtn-wrapper" data-identifier="food_{{ food.pk }}"></div>
+    <script>
+        (function(d,e,s){
+            if(d.getElementById("likebtn_wjs")) return;
+            var a = d.createElement(e);
+            var m = d.getElementsByTagName(e)[0];
+            a.async = 1;
+            a.id = "likebtn_wjs";
+            a.src = "//w.likebtn.com/js/w/widget.js";
+            m.parentNode.insertBefore(a, m);
+        })(document, "script");
+    </script>
+
+    <a href="{% url 'food:food_list' %}">Orqaga qaytish</a>
+
+    <h3>Izohlar</h3>
+    {% if comments %}
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    <p>{{ comment.content }}</p>
+                    <small>By {{ comment.user.username }} on {{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Hozircha izohlar yo'q. Birinchi bo'lib izoh qoldiring!</p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <h4>Izoh qoldirish</h4>
+        <form action="{% url 'food:add_comment' food.pk %}" method="post">
+            {% csrf_token %}
+            {{ comment_form.content }}
+            <button type="submit">Submit Comment</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'food:login' %}">Tizimga kiring</a> izoh qoldirish uchun.</p>
+    {% endif %}
 </body>
 </html>

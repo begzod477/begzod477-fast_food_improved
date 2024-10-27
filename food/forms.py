@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Food
+from .models import Category, Food, Comment
 
 class FoodForm(forms.ModelForm):
     class Meta:
@@ -56,5 +56,20 @@ def update(self, instance: Food):
             instance.image = self.cleaned_data.get("image")  
         instance.save()
         return instance
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Add a comment...',
+                'aria-label': 'Comment Content',
+                'required': True,
+            }),
+        }
 
   

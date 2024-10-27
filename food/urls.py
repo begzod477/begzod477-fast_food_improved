@@ -11,6 +11,12 @@ urlpatterns = [
     path('update/<int:id>/', update_food, name='update_food'),
     path('delete/<int:id>/', delete_food, name='delete_food'), 
     path('food/<int:food_id>/', food_detail, name='food_detail'),    
+    path('comment/<int:comment_id>/update/', views.update_comment, name='update_comment'),
+    path('food/<int:pk>/add_comment/', views.add_comment, name='add_comment'),
+    path('food/<int:pk>/like/', views.like_food, name='like_food'),
+
+
+
 ]
 
 if settings.DEBUG:

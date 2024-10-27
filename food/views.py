@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Category, Food
-from .forms import FoodForm
+from .models import Category, Food, Comment, Like
+from .forms import FoodForm, CommentForm
+from django.contrib import messages
 
 
 def home(request):
@@ -58,3 +59,35 @@ def food_detail(request, food_id):
     food.views += 1  
     food.save()  
     return render(request, 'food_detail.html', {'food': food})
+
+def add_comment(request, pk):
+    food = get_object_or_404(Food, pk=pk)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.food = food
+            comment.user = request.user
+            comment.save()
+            messages.success(request, 'Comment added successfully')
+    return redirect('menu:food_detail', pk=pk)
+
+def update_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id, user=request.user)
+    food = comment.food
+    if request.method == "POST":
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Comment updated successfully.')
+            return redirect('menu:food_detail', pk=food.pk)
+    else:
+        form = CommentForm(instance=comment)
+    return render(request, 'comment_form.html', {'form': form, 'food': food})
+
+def like_food(request, pk):
+    food = get_object_or_404(Food, pk=pk)
+    like, created = Like.objects.get_or_create(user=request.user, food=food)
+    if not created:
+        like.delete()
+    return redirect('menu:food_detail', pk=pk)
